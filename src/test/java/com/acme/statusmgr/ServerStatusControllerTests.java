@@ -49,4 +49,42 @@ public class ServerStatusControllerTests {
                 .andExpect(jsonPath("$.contentHeader").value("Server Status requested by RebYid"));
     }
 
+    @Test
+    public void detailed_name_availProc() throws Exception {
+        this.mockMvc.perform(get("/server/status/detailed?details=availableProcessors&name=Yankel"))
+                .andDo(print()).andExpect(status().isOk())
+                .andExpect(jsonPath("$.contentHeader").value("Server Status requested by Avrumel"))
+                .andExpect(jsonPath("$.statusDesc").value("Server is up, and there are 4 processors available"));
+    }
+
+    @Test
+    public void detailed_name_availProc_freeMemory() throws Exception {
+        this.mockMvc.perform(get("/server/status/detailed?details=availableProcessors,freeJVMMemory&name=Yankel"))
+                .andDo(print()).andExpect(status().isOk())
+                .andExpect(jsonPath("$.contentHeader").value("Server Status requested by Shmerel"))
+                .andExpect(jsonPath("$.statusDesc").value("Server is up, and there are 4 processors available"));
+    }
+
+    @Test
+    public void detailed_name_availProc_freeMemory_jreVersion() throws Exception {
+        this.mockMvc.perform(get("/server/status/detailed?details=availableProcessors,freeJVMMemory,jreVersion&name=Yankel"))
+                .andDo(print()).andExpect(status().isOk())
+                .andExpect(jsonPath("$.contentHeader").value("Server Status requested by Berel"))
+                .andExpect(jsonPath("$.statusDesc").value("Server is up, and there are 4 processors available"));
+    }
+
+    @Test
+    //todo make it catch an exception or something that will then print out whatever the prof. said to
+    public void detailed_name_error() throws Exception {
+        this.mockMvc.perform(get("/server/status/detailed?details=schedule&name=Yankel"))
+                .andDo(print()).andExpect(status().is5xxServerError())
+                .andExpect(status().reason("This application has no explicit mapping for /error, so you are seeing this as a fallback.\n" +
+                        //todo change the details
+                        "Wed Apr 07 17:06:55 EDT 2021\n" +
+                        "There was an unexpected error (type=Bad Request, status=400).\n" +
+                        "Invalid details option: junkERROR"));
+    }
+
+
+
 }
