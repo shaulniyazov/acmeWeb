@@ -1,5 +1,10 @@
 package com.acme.servermgr;
 
+import com.acme.SystemDetails;
+import com.acme.TempLocationDetails;
+
+import java.util.List;
+
 /**
  * Manage all servers (service providers) being tracked by the Acme server tracking system
  * For now just some simple static methods for use in school project.
@@ -14,6 +19,14 @@ public class ServerManager {
      */
     static public String getCurrentServerStatus() {
         return "up";  // The server is up
+    }
+
+    static public String getCurrentServerStatus(List<SystemDetails> details) {
+        for (int i = 0; i < details.size(); i++) {
+            details.get(i).returnString();
+        }
+        System.out.println(SystemDetails.detailString());
+        return SystemDetails.detailString();  // The server is up
     }
 
     /**

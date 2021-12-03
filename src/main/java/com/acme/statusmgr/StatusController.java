@@ -1,5 +1,6 @@
 package com.acme.statusmgr;
 
+import com.acme.SystemDetails;
 import com.acme.statusmgr.beans.ServerStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -7,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -30,6 +32,7 @@ public class StatusController {
 
     protected static final String template = "Server Status requested by %s";
     protected final AtomicLong counter = new AtomicLong();
+    protected static List<SystemDetails> detailsTest = new ArrayList<>();
 
     /**
      * Process a request for server status information
@@ -44,5 +47,25 @@ public class StatusController {
         logger.info(details.toString());
         return new ServerStatus(counter.incrementAndGet(),
                 String.format(template, name));
+    }
+
+    /*this is what it looks like:
+http://localhost:8080/server/status/detailed?name=Yankel&detailsString=availableProcessors,freeJVMMemory,totalJVMMemory,jreVersion,tempLocation
+{"id":12,"contentHeader":"Server Status requested by Yankel","statusDesc":"Server is up, and there are 4 processors available, and there are 4 processors available"}
+     */
+    @RequestMapping("/status/detailed")
+    public ServerStatus processDetailsRequest(@RequestParam(value = "name", defaultValue = "Anonymous") String name,
+                                       @RequestParam(required = true, value = "detailsString")  List<String> detailsString) {
+
+//        Logger logger = LoggerFactory.getLogger("detailsLog");
+//        logger.info(details.toString());
+//        for (int i = 0; i < details.size(); i++) {
+//            detailsTest.add(details.get(i));
+//
+//        }
+        List<SystemDetails> details  = SystemDetails.StringToDetail(detailsString);
+        return new ServerStatus(counter.incrementAndGet(),
+                String.format(template, name),
+                details);
     }
 }
