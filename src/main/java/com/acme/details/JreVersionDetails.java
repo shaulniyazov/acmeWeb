@@ -1,5 +1,6 @@
-package com.acme;
+package com.acme.details;
 
+import com.acme.details.SystemDetails;
 import com.acme.statusmgr.beans.ServerStatus;
 
 public class JreVersionDetails extends SystemDetails {

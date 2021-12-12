@@ -1,4 +1,4 @@
-package com.acme;
+package com.acme.details;
 
 import com.acme.statusmgr.beans.ServerStatus;
 

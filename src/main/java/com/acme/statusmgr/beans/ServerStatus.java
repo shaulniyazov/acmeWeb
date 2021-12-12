@@ -1,6 +1,6 @@
 package com.acme.statusmgr.beans;
 
-import com.acme.*;
+import com.acme.details.*;
 import com.acme.servermgr.ServerManager;
 
 import java.util.ArrayList;
