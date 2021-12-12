@@ -1,6 +1,10 @@
 package com.acme.statusmgr.beans;
 
+import com.acme.*;
 import com.acme.servermgr.ServerManager;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A POJO that represents Server Status and can be returned as the result of a request.
@@ -10,6 +14,7 @@ public class ServerStatus {
     private long id;
     private String contentHeader;
     private String statusDesc = "Unknown";
+    private List<SystemDetails> details;
 
     /**
      * Construct a ServerStatus using info passed in for identification, and obtaining current
@@ -25,6 +30,21 @@ public class ServerStatus {
 
         // Obtain current status of server
         this.statusDesc = "Server is " + ServerManager.getCurrentServerStatus();
+    }
+
+    public ServerStatus(long id, String contentHeader, List<String> detailsString) {
+        this.id = id;
+        this.contentHeader = contentHeader;
+        List<SystemDetails> details = StringToDetail(detailsString);
+        this.details = details;
+
+        //Obtain current status of server
+        this.statusDesc = "Server is " + ServerManager.getCurrentServerStatus();
+
+        for (int i = 0; i < details.size(); i++) {
+            this.statusDesc = details.get(i).getStatusDesc();
+        }
+
     }
 
     public ServerStatus() {
@@ -59,4 +79,26 @@ public class ServerStatus {
     }
 
 
+    public List<SystemDetails> StringToDetail(List<String> stringsToConvert){
+        List<SystemDetails> convertedStrings = new ArrayList<>();
+        // availableProcessors,freeJVMMemory,totalJVMMemory,jreVersion,tempLocation
+        for (int i = 0; i < stringsToConvert.size(); i++) {
+            if(stringsToConvert.get(i).equals("availableProcessors")){
+                convertedStrings.add(new AvailableProcessorDetails(this));
+            }
+            else if(stringsToConvert.get(i).equals("freeJVMMemory")){
+                convertedStrings.add(new FreeMemoryDetails(this));
+            }
+            else if(stringsToConvert.get(i).equals("totalJVMMemory")){
+                convertedStrings.add(new TotalMemoryDetails(this));
+            }
+            else if(stringsToConvert.get(i).equals("jreVersion")){
+                convertedStrings.add(new JreVersionDetails(this));
+            }
+            else if(stringsToConvert.get(i).equals("tempLocation")){
+                convertedStrings.add(new TempLocationDetails(this));
+            }
+        }
+        return convertedStrings;
+    }
 }
