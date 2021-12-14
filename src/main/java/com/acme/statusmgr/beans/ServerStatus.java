@@ -1,9 +1,10 @@
 package com.acme.statusmgr.beans;
 
+import com.acme.DetailsFacade;
+import com.acme.RealDetailsFacade;
 import com.acme.details.*;
 import com.acme.servermgr.ServerManager;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -14,7 +15,7 @@ public class ServerStatus {
     private long id;
     private String contentHeader;
     private String statusDesc = "Unknown";
-    private List<SystemDetails> details;
+    public static DetailsFacade facade = new RealDetailsFacade();
 
     /**
      * Construct a ServerStatus using info passed in for identification, and obtaining current
@@ -35,14 +36,12 @@ public class ServerStatus {
     public ServerStatus(long id, String contentHeader, List<String> detailsString) {
         this.id = id;
         this.contentHeader = contentHeader;
-        List<SystemDetails> details = StringToDetail(detailsString);
-        this.details = details;
 
         //Obtain current status of server
         this.statusDesc = "Server is " + ServerManager.getCurrentServerStatus();
 
-        for (int i = 0; i < details.size(); i++) {
-            this.statusDesc = details.get(i).getStatusDesc();
+        for (int i = 0; i < detailsString.size(); i++) {
+            this.statusDesc = stringToDetail(detailsString.get(i)) ;
         }
 
     }
@@ -78,27 +77,28 @@ public class ServerStatus {
         return statusDesc;
     }
 
-
-    public List<SystemDetails> StringToDetail(List<String> stringsToConvert){
-        List<SystemDetails> convertedStrings = new ArrayList<>();
+    public static void setFacade(DetailsFacade currentFacade){
+        facade = currentFacade;
+    }
+    public String stringToDetail(String detail){
+       // List<SystemDetails> convertedStrings = new ArrayList<>();
         // availableProcessors,freeJVMMemory,totalJVMMemory,jreVersion,tempLocation
-        for (int i = 0; i < stringsToConvert.size(); i++) {
-            if(stringsToConvert.get(i).equals("availableProcessors")){
-                convertedStrings.add(new AvailableProcessorDetails(this));
+            if(detail.equals("availableProcessors")){
+                return new AvailableProcessorDetails(this).getStatusDesc();
             }
-            else if(stringsToConvert.get(i).equals("freeJVMMemory")){
-                convertedStrings.add(new FreeMemoryDetails(this));
+            else if(detail.equals("freeJVMMemory")){
+                return new FreeMemoryDetails(this).getStatusDesc();
             }
-            else if(stringsToConvert.get(i).equals("totalJVMMemory")){
-                convertedStrings.add(new TotalMemoryDetails(this));
+            else if(detail.equals("totalJVMMemory")){
+                return new TotalMemoryDetails(this).getStatusDesc();
             }
-            else if(stringsToConvert.get(i).equals("jreVersion")){
-                convertedStrings.add(new JreVersionDetails(this));
+            else if(detail.equals("jreVersion")){
+                return new JreVersionDetails(this).getStatusDesc();
             }
-            else if(stringsToConvert.get(i).equals("tempLocation")){
-                convertedStrings.add(new TempLocationDetails(this));
+            else if(detail.equals("tempLocation")){
+                return new TempLocationDetails(this).getStatusDesc();
             }
-        }
-        return convertedStrings;
+            return "ItDon'tWork";
+        //todo return errorString;
     }
 }

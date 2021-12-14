@@ -10,6 +10,6 @@ public class TempLocationDetails extends SystemDetails {
 
     @Override
     public String getStatusDesc() {
-        return serverStatus.getStatusDesc() + ", and the server's temp file location is " + System.getenv("TEMP");
+        return serverStatus.getStatusDesc() + ", and the server's temp file location is " + serverStatus.facade.tempLocation();
     }
 }

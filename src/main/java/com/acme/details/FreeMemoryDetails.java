@@ -10,6 +10,6 @@ public class FreeMemoryDetails extends SystemDetails {
 
     @Override
     public String getStatusDesc() {
-        return serverStatus.getStatusDesc() + ", and there are " +Runtime.getRuntime().freeMemory()+ " bytes of JVM memory free";
+        return serverStatus.getStatusDesc() + ", and there are " + serverStatus.facade.freeMemory() + " bytes of JVM memory free";
     }
 }

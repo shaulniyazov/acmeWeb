@@ -57,12 +57,12 @@ http://localhost:8080/server/status/detailed?name=Yankel&detailsString=available
                                               @RequestParam(required = true, value = "detailsString")  List<String> detailsString) {
 
 //        Logger logger = LoggerFactory.getLogger("detailsLog");
-//        logger.info(details.toString());
-//        for (int i = 0; i < details.size(); i++) {
+//        logger.info(detailsString.toString());
+//        for (int i = 0; i < detailsString.size(); i++) {
 //            detailsTest.add(details.get(i));
 //
 //        }
-        //List<SystemDetails> details  = StringToDetail(detailsString); /*SystemDetails.StringToDetail(detailsString); */
+
         return new ServerStatus(counter.incrementAndGet(),
                 String.format(template, name),
                 detailsString);
