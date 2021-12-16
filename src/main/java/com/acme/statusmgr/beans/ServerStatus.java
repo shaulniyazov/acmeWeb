@@ -1,6 +1,12 @@
 package com.acme.statusmgr.beans;
 
+import com.acme.DetailsFacade;
+import com.acme.RealDetailsFacade;
+import com.acme.details.*;
 import com.acme.servermgr.ServerManager;
+import com.acme.statusmgr.StatusController;
+
+import java.util.List;
 
 /**
  * A POJO that represents Server Status and can be returned as the result of a request.
@@ -10,6 +16,7 @@ public class ServerStatus {
     private long id;
     private String contentHeader;
     private String statusDesc = "Unknown";
+    public static DetailsFacade facade = new RealDetailsFacade();
 
     /**
      * Construct a ServerStatus using info passed in for identification, and obtaining current
@@ -25,6 +32,19 @@ public class ServerStatus {
 
         // Obtain current status of server
         this.statusDesc = "Server is " + ServerManager.getCurrentServerStatus();
+    }
+
+    public ServerStatus(long id, String contentHeader, List<String> detailsString) {
+        this.id = id;
+        this.contentHeader = contentHeader;
+
+        //Obtain current status of server
+        this.statusDesc = "Server is " + ServerManager.getCurrentServerStatus();
+
+        for (int i = 0; i < detailsString.size(); i++) {
+            this.statusDesc = stringToDetail(detailsString.get(i)) ;
+        }
+
     }
 
     public ServerStatus() {
@@ -58,5 +78,23 @@ public class ServerStatus {
         return statusDesc;
     }
 
+    public static void setFacade(DetailsFacade currentFacade){
+        facade = currentFacade;
+    }
+
+    public String stringToDetail(String detail){
+       // List<SystemDetails> convertedStrings = new ArrayList<>();
+        // availableProcessors,freeJVMMemory,totalJVMMemory,jreVersion,tempLocation
+        return switch (detail) {
+            case "availableProcessors" -> new AvailableProcessorDetails(this).getStatusDesc();
+            case "freeJVMMemory" -> new FreeMemoryDetails(this).getStatusDesc();
+            case "totalJVMMemory" -> new TotalMemoryDetails(this).getStatusDesc();
+            case "jreVersion" -> new JreVersionDetails(this).getStatusDesc();
+            case "tempLocation" -> new TempLocationDetails(this).getStatusDesc();
+            //todo how do I do this?
+//            default -> StatusController.sendViaException(detail);
+            default -> "errorDetailNotAvailable";
+        };
+    }
 
 }
