@@ -4,6 +4,7 @@ import com.acme.DetailsFacade;
 import com.acme.RealDetailsFacade;
 import com.acme.details.*;
 import com.acme.servermgr.ServerManager;
+import com.acme.statusmgr.StatusController;
 
 import java.util.List;
 
@@ -80,25 +81,20 @@ public class ServerStatus {
     public static void setFacade(DetailsFacade currentFacade){
         facade = currentFacade;
     }
+
     public String stringToDetail(String detail){
        // List<SystemDetails> convertedStrings = new ArrayList<>();
         // availableProcessors,freeJVMMemory,totalJVMMemory,jreVersion,tempLocation
-            if(detail.equals("availableProcessors")){
-                return new AvailableProcessorDetails(this).getStatusDesc();
-            }
-            else if(detail.equals("freeJVMMemory")){
-                return new FreeMemoryDetails(this).getStatusDesc();
-            }
-            else if(detail.equals("totalJVMMemory")){
-                return new TotalMemoryDetails(this).getStatusDesc();
-            }
-            else if(detail.equals("jreVersion")){
-                return new JreVersionDetails(this).getStatusDesc();
-            }
-            else if(detail.equals("tempLocation")){
-                return new TempLocationDetails(this).getStatusDesc();
-            }
-            return "ItDon'tWork";
-        //todo return errorString;
+        return switch (detail) {
+            case "availableProcessors" -> new AvailableProcessorDetails(this).getStatusDesc();
+            case "freeJVMMemory" -> new FreeMemoryDetails(this).getStatusDesc();
+            case "totalJVMMemory" -> new TotalMemoryDetails(this).getStatusDesc();
+            case "jreVersion" -> new JreVersionDetails(this).getStatusDesc();
+            case "tempLocation" -> new TempLocationDetails(this).getStatusDesc();
+            //todo how do I do this?
+//            default -> StatusController.sendViaException(detail);
+            default -> "errorDetailNotAvailable";
+        };
     }
+
 }

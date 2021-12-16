@@ -14,7 +14,7 @@ public class FakeDetailsFacade extends DetailsFacade{
 
     @Override
     public String jreVersion() {
-        return " 15.0.2+7-27";
+        return "15.0.2+7-27";
     }
 
     @Override

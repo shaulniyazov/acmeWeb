@@ -9,6 +9,10 @@ public class JreVersionDetails extends SystemDetails {
         this.serverStatus = serverStatus;
     }
 
+    public JreVersionDetails() {
+
+    }
+
     @Override
     public String getStatusDesc() {
         return serverStatus.getStatusDesc() + ", and the JRE version is " + ServerStatus.facade.jreVersion();

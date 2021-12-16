@@ -8,6 +8,10 @@ public class FreeMemoryDetails extends SystemDetails {
         this.serverStatus = serverStatus;
     }
 
+    public FreeMemoryDetails() {
+
+    }
+
     @Override
     public String getStatusDesc() {
         return serverStatus.getStatusDesc() + ", and there are " + serverStatus.facade.freeMemory() + " bytes of JVM memory free";
